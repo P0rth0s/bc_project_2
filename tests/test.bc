@@ -1,0 +1,21 @@
+a = 5 #5
+b = 0 #0
+while[ a > 0 ] do a-- b++ done #0
+a #0
+b #5
+b = 0 #0
+for[a = 5 ; a > 0; a--] b++ #0
+b #5
+a=5 #5
+c=0 #0
+for[a > 0 ; a--] b-- c++ #0
+b #0
+c #5
+if[ !1 ] then 1 elif[ !1 ] then 2 else 3 #3
+if[ !1 ] then 1 elif[ !0 ] then 2 #2
+if[ !0 ] then 1 else 2 #1
+define testfunc() return 1 #0
+testfunc() #1
+define testfunc() act=4 return act #0
+testfunc() #4
+act #0
