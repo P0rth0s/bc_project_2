@@ -1,2 +1,2 @@
-define testfuncparam(a, b, c) return a - (b + c)
-testfuncparam(3, 1, 5)
+define testfuncfactorial(a) if[ a < 2 ] then return 1 else return a*testfuncfactorial(a-1)
+testfuncfactorial(5) #120

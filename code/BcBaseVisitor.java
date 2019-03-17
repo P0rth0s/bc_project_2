@@ -312,7 +312,6 @@ public class BcBaseVisitor extends AbstractParseTreeVisitor<Float> implements Bc
 		}
 		func_map.put(ctx.id.getText(), exprList);
 		List<String> idList = new ArrayList<String>();
-		//add to id list
 		int i = 1;
 		while(ctx.ID(i) != null) {
 			String str = ctx.ID(i).getText();
@@ -323,8 +322,11 @@ public class BcBaseVisitor extends AbstractParseTreeVisitor<Float> implements Bc
 		return (float) 0;
 	}
 
+	boolean ret_hit = false;
+
 	@Override public Float visitRet(BcParser.RetContext ctx) {
-		return (float) 0;
+		ret_hit = true;
+		return visitChildren(ctx);
 	}
 
 	@Override public Float visitFunction(BcParser.FunctionContext ctx) {
@@ -333,18 +335,26 @@ public class BcBaseVisitor extends AbstractParseTreeVisitor<Float> implements Bc
 		var_map_list.add(scope);
 
 		List<String> idList = func_map_params.get(ctx.id.getText());
-		int i = 0;
-		for(String id : idList) {
-			varPut(id, Float.parseFloat(ctx.FLOAT(i).getText()));
-			System.out.println("put " + ctx.FLOAT(i).getText() + " in " + id);
-			i++;
+		if(idList != null) {
+			int i = 0;
+			for(String id : idList) {
+				varPut(id, Float.parseFloat(ctx.FLOAT(i).getText()));
+				i++;
+			}
 		}
 
 		List<BcParser.Adv_exprContext> exprList = func_map.get(ctx.id.getText());
+		BcParser.Adv_exprContext ret = null;
 		for(BcParser.Adv_exprContext el : exprList) {
 			this.visit(el);
+			//if el is type return break and set ret
+			if(ret_hit == true) {
+				ret = el;
+				ret_hit = false;
+				break;
+			}
+			
 		}
-		BcParser.ExprContext ret = func_map_return.get(ctx.id.getText());
 		if(ret != null) {
 			Float val = this.visit(ret);
 			var_map_list.remove(scope);
