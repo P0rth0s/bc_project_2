@@ -314,8 +314,14 @@ public class BcBaseVisitor extends AbstractParseTreeVisitor<Float> implements Bc
 		func_map.put(ctx.id.getText(), exprList);
 		func_map_return.put(ctx.id.getText(), ctx.expr());
 		List<String> idList = new ArrayList<String>();
-
-		func_map_params.put(ctx.id.getText(), idList);
+		//add to id list
+		int i = 1;
+		while(ctx.ID(i) != null) {
+			String str = ctx.ID(i).getText();
+			idList.add(str);
+			func_map_params.put(ctx.id.getText(), idList);
+			i++;
+		}
 		return (float) 0;
 	}
 
@@ -326,6 +332,11 @@ public class BcBaseVisitor extends AbstractParseTreeVisitor<Float> implements Bc
 
 		List<String> idList = func_map_params.get(ctx.id.getText());
 		int i = 0;
+		for(String id : idList) {
+			varPut(id, Float.parseFloat(ctx.FLOAT(i).getText()));
+			System.out.println("put " + ctx.FLOAT(i).getText() + " in " + id);
+			i++;
+		}
 
 		List<BcParser.Adv_exprContext> exprList = func_map.get(ctx.id.getText());
 		for(BcParser.Adv_exprContext el : exprList) {
